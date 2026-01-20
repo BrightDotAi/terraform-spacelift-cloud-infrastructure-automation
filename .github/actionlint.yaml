@@ -1,0 +1,7 @@
+self-hosted-runner:
+  labels:
+  - bai-mgmt-uw2-automation-dind-small
+  - bai-mgmt-uw2-automation-dind-medium
+  - bai-mgmt-uw2-automation-dind-large
+  - bai-mgmt-uw2-automation-dind-xlarge
+  - bai-mgmt-uw2-automation-dind-2xlarge

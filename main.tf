@@ -60,17 +60,17 @@ locals {
       [
         for i in try(v.settings.spacelift.policies_enabled, var.policies_enabled) : (
           spacelift_policy.default[i].id
-        ) if ! contains(local.excluded_policies, i)
+        ) if !contains(local.excluded_policies, i)
       ],
       [
         for i in try(v.settings.spacelift.policies_by_name_enabled, var.policies_by_name_enabled) : (
           spacelift_policy.custom[i].id
-        ) if ! contains(local.excluded_policies, i)
+        ) if !contains(local.excluded_policies, i)
       ],
       [
         for i in try(v.settings.spacelift.policies_by_id_enabled, var.policies_by_id_enabled) : (
           i
-        ) if ! contains(local.excluded_policies, i)
+        ) if !contains(local.excluded_policies, i)
       ]
     )
   }
@@ -124,17 +124,18 @@ module "stacks" {
     try(each.value.labels, [])
   )
 
-  description           = try(each.value.settings.spacelift.description, null)
-  context_attachments   = compact(concat([join("", spacelift_context.default.*.id)], coalesce(try(each.value.settings.spacelift.context_attachments, null), var.context_attachments)))
-  autodeploy            = coalesce(try(each.value.settings.spacelift.autodeploy, null), var.autodeploy)
-  branch                = coalesce(try(each.value.settings.spacelift.branch, null), var.branch)
-  repository            = coalesce(try(each.value.settings.spacelift.repository, null), var.repository)
-  commit_sha            = var.commit_sha != null ? var.commit_sha : try(each.value.settings.spacelift.commit_sha, null)
-  spacelift_run_enabled = coalesce(try(each.value.settings.spacelift.spacelift_run_enabled, null), var.spacelift_run_enabled)
-  terraform_version     = lookup(var.terraform_version_map, try(each.value.settings.spacelift.terraform_version, ""), var.terraform_version)
-  component_root        = coalesce(try(each.value.settings.spacelift.component_root, null), format("%s/%s", var.components_path, coalesce(each.value.base_component, each.value.component)))
-  local_preview_enabled = try(each.value.settings.spacelift.local_preview_enabled, null) != null ? each.value.settings.spacelift.local_preview_enabled : var.local_preview_enabled
-  administrative        = try(each.value.settings.spacelift.administrative, null) != null ? each.value.settings.spacelift.administrative : var.administrative
+  description              = try(each.value.settings.spacelift.description, null)
+  context_attachments      = compact(concat([join("", spacelift_context.default[*].id)], coalesce(try(each.value.settings.spacelift.context_attachments, null), var.context_attachments)))
+  autodeploy               = coalesce(try(each.value.settings.spacelift.autodeploy, null), var.autodeploy)
+  branch                   = coalesce(try(each.value.settings.spacelift.branch, null), var.branch)
+  repository               = coalesce(try(each.value.settings.spacelift.repository, null), var.repository)
+  commit_sha               = var.commit_sha != null ? var.commit_sha : try(each.value.settings.spacelift.commit_sha, null)
+  spacelift_run_enabled    = coalesce(try(each.value.settings.spacelift.spacelift_run_enabled, null), var.spacelift_run_enabled)
+  terraform_version        = lookup(var.terraform_version_map, try(each.value.settings.spacelift.terraform_version, ""), var.terraform_version)
+  component_root           = coalesce(try(each.value.settings.spacelift.component_root, null), format("%s/%s", var.components_path, coalesce(each.value.base_component, each.value.component)))
+  additional_project_globs = try(each.value.settings.spacelift.additional_project_globs, [])
+  local_preview_enabled    = try(each.value.settings.spacelift.local_preview_enabled, null) != null ? each.value.settings.spacelift.local_preview_enabled : var.local_preview_enabled
+  administrative           = try(each.value.settings.spacelift.administrative, null) != null ? each.value.settings.spacelift.administrative : var.administrative
 
   azure_devops         = try(each.value.settings.spacelift.azure_devops, null)
   bitbucket_cloud      = try(each.value.settings.spacelift.bitbucket_cloud, null)
@@ -214,7 +215,7 @@ resource "spacelift_policy" "trigger_administrative" {
 resource "spacelift_policy_attachment" "trigger_administrative" {
   count = var.external_execution || var.administrative_trigger_policy_enabled == false ? 0 : 1
 
-  policy_id = join("", spacelift_policy.trigger_administrative.*.id)
+  policy_id = join("", spacelift_policy.trigger_administrative[*].id)
   stack_id  = data.spacelift_current_stack.administrative[0].id
 }
 
@@ -233,7 +234,7 @@ resource "spacelift_policy" "push_administrative" {
 resource "spacelift_policy_attachment" "push_administrative" {
   count = var.external_execution || var.administrative_push_policy_enabled == false ? 0 : 1
 
-  policy_id = join("", spacelift_policy.push_administrative.*.id)
+  policy_id = join("", spacelift_policy.push_administrative[*].id)
   stack_id  = data.spacelift_current_stack.administrative[0].id
 }
 
@@ -257,7 +258,7 @@ resource "spacelift_context" "default" {
 
 resource "spacelift_environment_variable" "default" {
   for_each   = local.stack_context_variables_enabled ? var.stack_context_variables : {}
-  context_id = join("", spacelift_context.default.*.id)
+  context_id = join("", spacelift_context.default[*].id)
   name       = each.key
   value      = each.value
   write_only = false

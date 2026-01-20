@@ -27,6 +27,7 @@ resource "spacelift_stack" "default" {
   labels                       = local.labels
   enable_local_preview         = var.local_preview_enabled
   terraform_smart_sanitization = var.terraform_smart_sanitization
+  additional_project_globs     = var.additional_project_globs
 
   worker_pool_id      = var.worker_pool_id
   runner_image        = var.runner_image
@@ -201,7 +202,7 @@ resource "spacelift_stack_destructor" "default" {
   count = var.enabled ? 1 : 0
 
   stack_id    = spacelift_stack.default[0].id
-  deactivated = ! var.stack_destructor_enabled
+  deactivated = !var.stack_destructor_enabled
 
   depends_on = [
     spacelift_mounted_file.stack_config,
