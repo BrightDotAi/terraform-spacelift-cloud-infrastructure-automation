@@ -1,96 +1,70 @@
-variable "space_name" {
+variable "repository" {
   type        = string
-  description = "Name of the Spacelift space where policies will be applied"
+  description = "The name of your infrastructure repo"
 }
 
-variable "description" {
+variable "branch" {
   type        = string
-  description = "Description of the Spacelift space"
+  description = "Specify which branch to use within your infrastructure repo"
+  default     = "main"
+}
+
+variable "terraform_version" {
+  type        = string
+  description = "Specify the version of Terraform to use for the stack"
   default     = null
 }
 
-variable "parent_space_id" {
-  type        = string
-  description = "ID of the parent Spacelift space. Use 'root' for top-level spaces"
-  default     = "root"
+variable "terraform_version_map" {
+  type        = map(string)
+  description = "A map to determine which Terraform patch version to use for each minor version"
+  default     = {}
 }
 
-variable "inherit_entities_from_parent" {
+variable "autodeploy" {
   type        = bool
-  description = "Flag to indicate whether this space inherits read access to entities from the parent space"
+  description = "Autodeploy global setting for Spacelift stacks. This setting can be overidden in stack-level configuration)"
   default     = false
 }
 
-variable "labels" {
-  type        = set(string)
-  description = "List of labels to add to the Spacelift space"
-  default     = []
+variable "external_execution" {
+  type        = bool
+  description = "Set this to true if you're calling this module from outside of a Spacelift stack (e.g. the `complete` example)."
+  default     = false
 }
 
-variable "inline_policy_name" {
+variable "imports_processing_enabled" {
+  type        = bool
+  description = "Enable/disable processing stack imports"
+  default     = false
+}
+
+variable "stack_deps_processing_enabled" {
+  type        = bool
+  description = "Boolean flag to enable/disable processing all stack dependencies in the provided stack"
+  default     = false
+}
+
+variable "component_deps_processing_enabled" {
+  type        = bool
+  description = "Boolean flag to enable/disable processing stack config dependencies for the components in the provided stack"
+  default     = true
+}
+
+variable "stack_config_path_template" {
   type        = string
-  description = "Name of the inline Spacelift policy"
+  description = "Stack config path template"
+  default     = "stacks/%s.yaml"
 }
 
-variable "inline_policy_type" {
+variable "worker_pool_id" {
   type        = string
-  description = "Type of the inline Spacelift policy (e.g., 'PLAN', 'TRIGGER')"
+  description = "The immutable ID (slug) of the default worker pool"
+  default     = null
 }
 
-variable "inline_policy_body" {
-  type        = string
-  description = "Body of the inline Spacelift policy in Rego format"
-}
-
-variable "inline_policy_labels" {
-  type        = set(string)
-  description = "List of labels to add to the inline Spacelift policy"
-  default     = []
-}
-
-variable "catalog_policy_name" {
-  type        = string
-  description = "Name of the catalog Spacelift policy"
-}
-
-variable "catalog_policy_body_url" {
-  type        = string
-  description = "URL of the catalog Spacelift policy body in Rego format"
-}
-
-variable "catalog_policy_type" {
-  type        = string
-  description = "Type of the catalog Spacelift policy (e.g., 'PLAN', 'TRIGGER')"
-}
-
-variable "catalog_policy_body_url_version" {
-  type        = string
-  description = "Version or branch of the catalog policy to use (e.g., 'master')"
-}
-
-variable "catalog_policy_labels" {
-  type        = set(string)
-  description = "List of labels to add to the catalog Spacelift policy"
-  default     = []
-}
-
-variable "file_policy_name" {
-  type        = string
-  description = "Name of the file-based Spacelift policy"
-}
-
-variable "file_policy_type" {
-  type        = string
-  description = "Type of the file-based Spacelift policy (e.g., 'PLAN', 'TRIGGER')"
-}
-
-variable "file_policy_body_path" {
-  type        = string
-  description = "File path to the Rego policy body for the file-based Spacelift policy"
-}
-
-variable "file_policy_labels" {
-  type        = set(string)
-  description = "List of labels to add to the file-based Spacelift policy"
-  default     = []
+variable "worker_pool_name_id_map" {
+  type        = map(string)
+  description = "Map of worker pool names to worker pool IDs. If this map is not provided or a worker pool name is not specified for a stack in YAML config, `var.worker_pool_id` will be used to assign a worker pool to the stack"
+  default     = {}
 }

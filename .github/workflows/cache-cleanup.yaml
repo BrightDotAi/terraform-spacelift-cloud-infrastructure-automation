@@ -1,0 +1,9 @@
+name: cleanup caches by a branch
+on:
+  pull_request:
+    types: [closed]
+
+jobs:
+  cleanup:
+    uses: BrightDotAi/github-workflows/.github/workflows/cache-cleanup.yaml@v0
+    secrets: inherit

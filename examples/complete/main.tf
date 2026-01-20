@@ -1,44 +1,24 @@
 provider "spacelift" {}
 
-# Policies attached to a space created by this module
+module "example" {
+  source = "../.."
 
-module "space" {
-  source = "../../modules/spacelift-space"
+  branch             = var.branch
+  repository         = var.repository
+  manage_state       = true
+  external_execution = true
 
-  space_name                   = var.space_name
-  description                  = var.description
-  parent_space_id              = var.parent_space_id
-  inherit_entities_from_parent = var.inherit_entities_from_parent
-  labels                       = var.labels
-}
+  # Global defaults for all Spacelift stacks created by this project
+  terraform_version = var.terraform_version
+  autodeploy        = var.autodeploy
 
-module "inline_policy" {
-  source = "../../modules/spacelift-policy"
+  terraform_version_map = var.terraform_version_map
 
-  policy_name = var.inline_policy_name
-  type        = var.inline_policy_type
-  body        = var.inline_policy_body
-  labels      = var.inline_policy_labels
-  space_id    = module.space.space_id
-}
+  imports_processing_enabled        = var.imports_processing_enabled
+  stack_deps_processing_enabled     = var.stack_deps_processing_enabled
+  component_deps_processing_enabled = var.component_deps_processing_enabled
+  stack_config_path_template        = var.stack_config_path_template
 
-module "catalog_policy" {
-  source = "../../modules/spacelift-policy"
-
-  policy_name      = var.catalog_policy_name
-  type             = var.catalog_policy_type
-  body_url         = var.catalog_policy_body_url
-  body_url_version = var.catalog_policy_body_url_version
-  labels           = var.catalog_policy_labels
-  space_id         = module.space.space_id
-}
-
-module "file_policy" {
-  source = "../../modules/spacelift-policy"
-
-  policy_name    = var.file_policy_name
-  type           = var.file_policy_type
-  body_file_path = var.file_policy_body_path
-  labels         = var.file_policy_labels
-  space_id       = module.space.space_id
+  worker_pool_id          = var.worker_pool_id
+  worker_pool_name_id_map = var.worker_pool_name_id_map
 }

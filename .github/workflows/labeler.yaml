@@ -1,0 +1,6 @@
+name: Labeler
+
+on: [pull_request_target]
+jobs:
+  label:
+    uses: BrightDotAi/github-workflows/.github/workflows/labeler.yaml@v0
