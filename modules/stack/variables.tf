@@ -62,6 +62,12 @@ variable "component_root" {
   description = "The path, relative to the root of the repository, where the component can be found"
 }
 
+variable "additional_project_globs" {
+  type        = list(string)
+  description = ""
+  default     = []
+}
+
 variable "infrastructure_stack_name" {
   type        = string
   description = "The name of the infrastructure stack"

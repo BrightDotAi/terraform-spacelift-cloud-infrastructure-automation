@@ -95,7 +95,7 @@ variable "runner_image" {
 
 variable "autodeploy" {
   type        = bool
-  description = "Autodeploy global setting for Spacelift stacks. This setting can be overidden in stack-level configuration)"
+  description = "Autodeploy global setting for Spacelift stacks. This setting can be overridden in stack-level configuration)"
   default     = false
 }
 
