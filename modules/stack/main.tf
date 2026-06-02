@@ -18,7 +18,6 @@ resource "spacelift_stack" "default" {
 
   name                         = var.stack_name
   description                  = var.description
-  administrative               = var.administrative
   autodeploy                   = var.autodeploy
   repository                   = var.repository
   branch                       = var.branch

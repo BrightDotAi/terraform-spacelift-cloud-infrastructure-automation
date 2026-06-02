@@ -4,7 +4,6 @@ output "config" {
   value = try({
     id                           = spacelift_stack.default[0].id
     name                         = spacelift_stack.default[0].name
-    administrative               = spacelift_stack.default[0].administrative
     autodeploy                   = spacelift_stack.default[0].autodeploy
     terraform_version            = spacelift_stack.default[0].terraform_version
     terraform_smart_sanitization = spacelift_stack.default[0].terraform_smart_sanitization
