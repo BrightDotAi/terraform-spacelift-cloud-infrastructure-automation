@@ -113,7 +113,7 @@ module "stacks" {
   spacelift_stack_dependency_enabled = var.spacelift_stack_dependency_enabled
 
   labels = (
-    try(each.value.settings.spacelift.administrative, null) != null ? each.value.settings.spacelift.administrative : var.administrative
+    try(each.value.settings.spacelift.space_admin_role_binding_enabled, var.space_admin_role_binding_enabled)
     ) ? concat(
     local.labels,
     var.admin_labels,
@@ -135,7 +135,6 @@ module "stacks" {
   component_root           = coalesce(try(each.value.settings.spacelift.component_root, null), format("%s/%s", var.components_path, coalesce(each.value.base_component, each.value.component)))
   additional_project_globs = try(each.value.settings.spacelift.additional_project_globs, [])
   local_preview_enabled    = try(each.value.settings.spacelift.local_preview_enabled, null) != null ? each.value.settings.spacelift.local_preview_enabled : var.local_preview_enabled
-  administrative           = try(each.value.settings.spacelift.administrative, null) != null ? each.value.settings.spacelift.administrative : var.administrative
 
   azure_devops         = try(each.value.settings.spacelift.azure_devops, null)
   bitbucket_cloud      = try(each.value.settings.spacelift.bitbucket_cloud, null)

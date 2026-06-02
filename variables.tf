@@ -309,9 +309,9 @@ variable "after_plan" {
   default     = []
 }
 
-variable "administrative" {
+variable "space_admin_role_binding_enabled" {
   type        = bool
-  description = "Whether this stack can manage other stacks"
+  description = "Whether a stack is an administrative stack that manages other stacks. Drives the admin vs non-admin folder labels (and the policies that auto-attach to them). Replaces the deprecated `administrative` flag, which Spacelift disabled on 2026-06-01; authority now comes from the `space-admin` role attachment. Set per-stack via `settings.spacelift.space_admin_role_binding_enabled`."
   default     = false
 }
 
