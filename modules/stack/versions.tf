@@ -4,7 +4,7 @@ terraform {
   required_providers {
     spacelift = {
       source  = "spacelift-io/spacelift"
-      version = ">= 0.1.27"
+      version = ">= 1.37" # spacelift_role_attachment / spacelift_role
     }
   }
 }

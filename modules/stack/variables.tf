@@ -352,3 +352,21 @@ variable "spacelift_stack_dependency_enabled" {
   description = "If enabled, the `spacelift_stack_dependency` Spacelift resource will be used to create dependencies between stacks instead of using the `depends-on` labels. The `depends-on` labels will be removed from the stacks and the trigger policies for dependencies will be detached"
   default     = false
 }
+
+variable "space_admin_role_binding_enabled" {
+  type        = bool
+  description = "When true, attach the built-in `space-admin` role to this stack so it is created with the authority to manage other stacks (CORE-1886)."
+  default     = false
+}
+
+variable "space_admin_role_id" {
+  type        = string
+  description = "ID of the built-in `space-admin` role to attach when `space_admin_role_binding_enabled` is true. Looked up by the calling module."
+  default     = null
+}
+
+variable "space_admin_role_binding_space_id" {
+  type        = string
+  description = "Space ID in which to grant the `space-admin` role. Defaults to the stack's own space when null."
+  default     = null
+}

@@ -230,3 +230,15 @@ resource "spacelift_space" "default" {
   description      = var.description
   labels           = var.labels
 }
+
+# CORE-1886: grant the built-in `space-admin` role to admin stacks at creation
+# time. The creating (parent) stack owns this binding so a freshly created admin
+# stack has authority immediately — it can no longer self-attach via the
+# deprecated `administrative` flag (disabled by Spacelift 2026-06-01).
+resource "spacelift_role_attachment" "space_admin" {
+  count = var.enabled && var.space_admin_role_binding_enabled ? 1 : 0
+
+  stack_id = spacelift_stack.default[0].id
+  role_id  = var.space_admin_role_id
+  space_id = coalesce(var.space_admin_role_binding_space_id, try(spacelift_space.default[0].id, var.space_id))
+}

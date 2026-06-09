@@ -311,8 +311,14 @@ variable "after_plan" {
 
 variable "space_admin_role_binding_enabled" {
   type        = bool
-  description = "Whether a stack is an administrative stack that manages other stacks. Drives the admin vs non-admin folder labels (and the policies that auto-attach to them). Replaces the deprecated `administrative` flag, which Spacelift disabled on 2026-06-01; authority now comes from the `space-admin` role attachment. Set per-stack via `settings.spacelift.space_admin_role_binding_enabled`."
+  description = "Whether a stack is an administrative stack that manages other stacks. Drives the admin vs non-admin folder labels (and the policies that auto-attach to them), and attaches the built-in `space-admin` role to the stack so it is created with the authority it needs to manage other stacks. Replaces the deprecated `administrative` flag, which Spacelift disabled on 2026-06-01. Set per-stack via `settings.spacelift.space_admin_role_binding_enabled`."
   default     = false
+}
+
+variable "space_admin_role_binding_space_id" {
+  type        = string
+  description = "Space ID in which the `space-admin` role is granted to stacks with `space_admin_role_binding_enabled`. Defaults to each stack's own space (mirrors Spacelift's 2026-06-01 auto-backfill behavior). Override per stack via `settings.spacelift.space_admin_role_binding_space_id`."
+  default     = null
 }
 
 variable "context_attachments" {
