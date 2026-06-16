@@ -117,7 +117,11 @@ resource "spacelift_run" "default" {
     spacelift_mounted_file.stack_config[0],
     spacelift_environment_variable.stack_name[0],
     spacelift_environment_variable.component_name[0],
-    spacelift_policy_attachment.default[0]
+    spacelift_policy_attachment.default[0],
+    # CORE-1886: ensure an admin stack's space-admin role lands before its first
+    # run starts, so a run that manages other stacks can't fail unauthorized.
+    # No index: tolerates count = 0 when space_admin_role_binding_enabled is false.
+    spacelift_role_attachment.space_admin
   ]
 }
 
