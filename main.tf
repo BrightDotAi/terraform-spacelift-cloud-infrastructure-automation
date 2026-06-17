@@ -88,6 +88,15 @@ resource "spacelift_policy" "custom" {
   space_id = var.attachment_space_id
 }
 
+# CORE-1886: built-in role granted to admin stacks by the stack that creates
+# them. Self-managed bindings (CORE-1796) could only bootstrap while the
+# deprecated `administrative` flag was still live — a stack created after
+# Spacelift's 2026-06-01 flag disable starts with no authority and cannot
+# attach its own role.
+data "spacelift_role" "space_admin" {
+  slug = "space-admin"
+}
+
 module "stacks" {
   source = "./modules/stack"
 
@@ -123,6 +132,10 @@ module "stacks" {
     var.non_admin_labels,
     try(each.value.labels, [])
   )
+
+  space_admin_role_binding_enabled  = try(each.value.settings.spacelift.space_admin_role_binding_enabled, var.space_admin_role_binding_enabled)
+  space_admin_role_id               = data.spacelift_role.space_admin.id
+  space_admin_role_binding_space_id = try(each.value.settings.spacelift.space_admin_role_binding_space_id, var.space_admin_role_binding_space_id)
 
   description              = try(each.value.settings.spacelift.description, null)
   context_attachments      = compact(concat([join("", spacelift_context.default[*].id)], coalesce(try(each.value.settings.spacelift.context_attachments, null), var.context_attachments)))

@@ -117,7 +117,11 @@ resource "spacelift_run" "default" {
     spacelift_mounted_file.stack_config[0],
     spacelift_environment_variable.stack_name[0],
     spacelift_environment_variable.component_name[0],
-    spacelift_policy_attachment.default[0]
+    spacelift_policy_attachment.default[0],
+    # CORE-1886: ensure an admin stack's space-admin role lands before its first
+    # run starts, so a run that manages other stacks can't fail unauthorized.
+    # No index: tolerates count = 0 when space_admin_role_binding_enabled is false.
+    spacelift_role_attachment.space_admin
   ]
 }
 
@@ -229,4 +233,16 @@ resource "spacelift_space" "default" {
   inherit_entities = var.inherit_entities
   description      = var.description
   labels           = var.labels
+}
+
+# CORE-1886: grant the built-in `space-admin` role to admin stacks at creation
+# time. The creating (parent) stack owns this binding so a freshly created admin
+# stack has authority immediately — it can no longer self-attach via the
+# deprecated `administrative` flag (disabled by Spacelift 2026-06-01).
+resource "spacelift_role_attachment" "space_admin" {
+  count = var.enabled && var.space_admin_role_binding_enabled ? 1 : 0
+
+  stack_id = spacelift_stack.default[0].id
+  role_id  = var.space_admin_role_id
+  space_id = coalesce(var.space_admin_role_binding_space_id, try(spacelift_space.default[0].id, var.space_id))
 }
