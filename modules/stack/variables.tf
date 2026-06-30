@@ -155,6 +155,12 @@ variable "drift_detection_schedule" {
   default     = ["0 4 * * *"]
 }
 
+variable "drift_detection_ignore_state" {
+  type        = bool
+  description = "If true, drift detection runs on the stack in any final state (incl. Failed), not only Finished"
+  default     = false
+}
+
 variable "aws_role_enabled" {
   type        = bool
   description = "Flag to enable/disable Spacelift to use AWS STS to assume the supplied IAM role and put its temporary credentials in the runtime environment"

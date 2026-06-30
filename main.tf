@@ -166,10 +166,11 @@ module "stacks" {
   webhook_secret   = var.webhook_secret
 
   # Policies to attach to the stack (internally created + additional external provided by IDs + additional external created by this module from external Rego files)
-  policy_ids                = local.stack_policies[each.key]
-  drift_detection_enabled   = try(each.value.settings.spacelift.drift_detection_enabled, null) != null ? each.value.settings.spacelift.drift_detection_enabled : var.drift_detection_enabled
-  drift_detection_reconcile = try(each.value.settings.spacelift.drift_detection_reconcile, null) != null ? each.value.settings.spacelift.drift_detection_reconcile : var.drift_detection_reconcile
-  drift_detection_schedule  = try(each.value.settings.spacelift.drift_detection_schedule, null) != null ? each.value.settings.spacelift.drift_detection_schedule : var.drift_detection_schedule
+  policy_ids                   = local.stack_policies[each.key]
+  drift_detection_enabled      = try(each.value.settings.spacelift.drift_detection_enabled, null) != null ? each.value.settings.spacelift.drift_detection_enabled : var.drift_detection_enabled
+  drift_detection_reconcile    = try(each.value.settings.spacelift.drift_detection_reconcile, null) != null ? each.value.settings.spacelift.drift_detection_reconcile : var.drift_detection_reconcile
+  drift_detection_schedule     = try(each.value.settings.spacelift.drift_detection_schedule, null) != null ? each.value.settings.spacelift.drift_detection_schedule : var.drift_detection_schedule
+  drift_detection_ignore_state = try(each.value.settings.spacelift.drift_detection_ignore_state, null) != null ? each.value.settings.spacelift.drift_detection_ignore_state : var.drift_detection_ignore_state
 
   aws_role_enabled     = try(each.value.settings.spacelift.aws_role_enabled, null) != null ? each.value.settings.spacelift.aws_role_enabled : var.aws_role_enabled
   aws_role_arn         = try(each.value.settings.spacelift.aws_role_arn, null) != null ? each.value.settings.spacelift.aws_role_arn : var.aws_role_arn
@@ -254,9 +255,10 @@ resource "spacelift_policy_attachment" "push_administrative" {
 resource "spacelift_drift_detection" "drift_detection_administrative" {
   count = var.external_execution || var.administrative_stack_drift_detection_enabled == false ? 0 : 1
 
-  stack_id  = data.spacelift_current_stack.administrative[0].id
-  reconcile = var.administrative_stack_drift_detection_reconcile
-  schedule  = var.administrative_stack_drift_detection_schedule
+  stack_id     = data.spacelift_current_stack.administrative[0].id
+  reconcile    = var.administrative_stack_drift_detection_reconcile
+  schedule     = var.administrative_stack_drift_detection_schedule
+  ignore_state = var.administrative_stack_drift_detection_ignore_state
 }
 
 resource "spacelift_context" "default" {
