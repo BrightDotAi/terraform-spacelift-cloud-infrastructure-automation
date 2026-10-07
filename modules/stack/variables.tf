@@ -39,6 +39,12 @@ variable "terraform_version" {
   default     = null
 }
 
+variable "terraform_workflow_tool" {
+  type        = string
+  description = "Workflow tool for the stack (`TERRAFORM_FOSS`, `OPEN_TOFU` or `CUSTOM`)"
+  default     = null
+}
+
 variable "terraform_workspace" {
   type        = string
   description = "Specify the Terraform workspace to use for the stack"
