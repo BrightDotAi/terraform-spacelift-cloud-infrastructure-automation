@@ -63,6 +63,17 @@ variable "terraform_version" {
   default     = null
 }
 
+variable "terraform_workflow_tool" {
+  type        = string
+  description = "Default workflow tool for all stacks (`TERRAFORM_FOSS`, `OPEN_TOFU` or `CUSTOM`). Override per stack with `settings.spacelift.terraform_workflow_tool`. `null` keeps the Spacelift default (`TERRAFORM_FOSS`)"
+  default     = null
+
+  validation {
+    condition     = var.terraform_workflow_tool == null || contains(["TERRAFORM_FOSS", "OPEN_TOFU", "CUSTOM"], coalesce(var.terraform_workflow_tool, "TERRAFORM_FOSS"))
+    error_message = "terraform_workflow_tool must be one of TERRAFORM_FOSS, OPEN_TOFU or CUSTOM."
+  }
+}
+
 variable "terraform_version_map" {
   type        = map(string)
   description = "A map to determine which Terraform patch version to use for each minor version"

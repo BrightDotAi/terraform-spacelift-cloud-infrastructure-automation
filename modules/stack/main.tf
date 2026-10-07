@@ -28,10 +28,11 @@ resource "spacelift_stack" "default" {
   terraform_smart_sanitization = var.terraform_smart_sanitization
   additional_project_globs     = var.additional_project_globs
 
-  worker_pool_id      = var.worker_pool_id
-  runner_image        = var.runner_image
-  terraform_version   = var.terraform_version
-  terraform_workspace = var.terraform_workspace
+  worker_pool_id          = var.worker_pool_id
+  runner_image            = var.runner_image
+  terraform_version       = var.terraform_version
+  terraform_workflow_tool = var.terraform_workflow_tool
+  terraform_workspace     = var.terraform_workspace
 
   after_apply    = var.after_apply
   after_destroy  = var.after_destroy
